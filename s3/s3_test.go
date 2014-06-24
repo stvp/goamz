@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/mitchellh/goamz/aws"
-	"github.com/mitchellh/goamz/s3"
-	"github.com/mitchellh/goamz/testutil"
+	"github.com/stvp/goamz/aws"
+	"github.com/stvp/goamz/s3"
+	"github.com/stvp/goamz/testutil"
 	. "github.com/motain/gocheck"
 	"time"
 )
