@@ -32,6 +32,7 @@ func (s *AmazonServer) SetUp(c *C) {
 
 var _ = Suite(&AmazonClientSuite{Region: aws.USEast})
 var _ = Suite(&AmazonClientSuite{Region: aws.EUWest})
+var _ = Suite(&AmazonClientSuite{Region: aws.EUCentral})
 var _ = Suite(&AmazonDomainClientSuite{Region: aws.USEast})
 
 // AmazonClientSuite tests the client against a live S3 server.
@@ -215,6 +216,31 @@ func (s *ClientTests) TestBasicFunctionality(c *C) {
 	err = b.Del("name")
 	c.Assert(err, IsNil)
 	err = b.Del("name2")
+	c.Assert(err, IsNil)
+
+	err = b.DelBucket()
+	c.Assert(err, IsNil)
+}
+
+func (s *ClientTests) TestCopy(c *C) {
+	b := testBucket(s.s3)
+	err := b.PutBucket(s3.PublicRead)
+
+	err = b.Put("name+1", []byte("yo!"), "text/plain", s3.PublicRead)
+	c.Assert(err, IsNil)
+	defer b.Del("name+1")
+
+	err = b.Copy("name+1", "name+2", s3.PublicRead)
+	c.Assert(err, IsNil)
+	defer b.Del("name+2")
+
+	data, err := b.Get("name+2")
+	c.Assert(err, IsNil)
+	c.Assert(string(data), Equals, "yo!")
+
+	err = b.Del("name+1")
+	c.Assert(err, IsNil)
+	err = b.Del("name+2")
 	c.Assert(err, IsNil)
 
 	err = b.DelBucket()

@@ -6,11 +6,12 @@ import (
 	"net/http"
 	"testing"
 
+	"time"
+
 	"github.com/stvp/goamz/aws"
 	"github.com/stvp/goamz/s3"
 	"github.com/stvp/goamz/testutil"
 	. "github.com/motain/gocheck"
-	"time"
 )
 
 func Test(t *testing.T) {
@@ -81,6 +82,22 @@ func (s *S) TestDelBucket(c *C) {
 	c.Assert(req.Header["Date"], Not(Equals), "")
 }
 
+// ListBuckets: http://goo.gl/NqlyMN
+
+func (s *S) TestListBuckets(c *C) {
+	testServer.Response(200, nil, GetListBucketsDump)
+
+	buckets, err := s.s3.ListBuckets()
+	c.Assert(err, IsNil)
+	c.Assert(len(buckets.Buckets), Equals, 2)
+	c.Assert(buckets.Buckets[0].Name, Equals, "bucket1")
+	c.Assert(buckets.Buckets[1].Name, Equals, "bucket2")
+
+	req := testServer.WaitRequest()
+	c.Assert(req.Method, Equals, "GET")
+	c.Assert(req.URL.Path, Equals, "/")
+}
+
 // GetObject docs: http://goo.gl/isCO7
 
 func (s *S) TestGet(c *C) {
@@ -96,6 +113,21 @@ func (s *S) TestGet(c *C) {
 
 	c.Assert(err, IsNil)
 	c.Assert(string(data), Equals, "content")
+}
+
+func (s *S) TestHead(c *C) {
+	testServer.Response(200, nil, "")
+	b := s.s3.Bucket("bucket")
+	resp, err := b.Head("name")
+	req := testServer.WaitRequest()
+	c.Assert(req.Method, Equals, "HEAD")
+	c.Assert(req.URL.Path, Equals, "/bucket/name")
+	c.Assert(req.Header["Date"], Not(Equals), "")
+
+	c.Assert(err, IsNil)
+	body, err := ioutil.ReadAll(resp.Body)
+	c.Assert(err, IsNil)
+	c.Assert(len(body), Equals, 0)
 }
 
 func (s *S) TestURL(c *C) {
@@ -240,6 +272,42 @@ func (s *S) TestPutReaderHeader(c *C) {
 	c.Assert(req.Header["X-Amz-Acl"], DeepEquals, []string{"private"})
 }
 
+func (s *S) TestCopy(c *C) {
+	testServer.Response(200, nil, "")
+
+	b := s.s3.Bucket("bucket")
+	err := b.Copy(
+		"old/file",
+		"new/file",
+		s3.Private,
+	)
+	c.Assert(err, IsNil)
+
+	req := testServer.WaitRequest()
+	c.Assert(req.Method, Equals, "PUT")
+	c.Assert(req.URL.Path, Equals, "/bucket/new/file")
+	c.Assert(req.Header["X-Amz-Copy-Source"], DeepEquals, []string{"/bucket/old/file"})
+	c.Assert(req.Header["X-Amz-Acl"], DeepEquals, []string{"private"})
+}
+
+func (s *S) TestPlusInURL(c *C) {
+	testServer.Response(200, nil, "")
+
+	b := s.s3.Bucket("bucket")
+	err := b.Copy(
+		"dir/old+f?le",
+		"dir/new+f?le",
+		s3.Private,
+	)
+	c.Assert(err, IsNil)
+
+	req := testServer.WaitRequest()
+	c.Assert(req.Method, Equals, "PUT")
+	c.Assert(req.RequestURI, Equals, "/bucket/dir/new%2Bf%3Fle")
+	c.Assert(req.Header["X-Amz-Copy-Source"], DeepEquals, []string{"/bucket/dir/old%2Bf%3Fle"})
+	c.Assert(req.Header["X-Amz-Acl"], DeepEquals, []string{"private"})
+}
+
 // DelObject docs: http://goo.gl/APeTt
 
 func (s *S) TestDelObject(c *C) {
@@ -253,6 +321,26 @@ func (s *S) TestDelObject(c *C) {
 	c.Assert(req.Method, Equals, "DELETE")
 	c.Assert(req.URL.Path, Equals, "/bucket/name")
 	c.Assert(req.Header["Date"], Not(Equals), "")
+}
+
+// Delete Multiple Objects docs: http://goo.gl/WvA5sj
+
+func (s *S) TestMultiDelObject(c *C) {
+	testServer.Response(200, nil, "")
+
+	b := s.s3.Bucket("bucket")
+	err := b.MultiDel([]string{"a", "b"})
+	c.Assert(err, IsNil)
+
+	req := testServer.WaitRequest()
+	c.Assert(req.Method, Equals, "POST")
+	c.Assert(req.URL.Path, Equals, "/bucket/")
+	c.Assert(req.RequestURI, Equals, "/bucket/?delete=")
+	c.Assert(req.Header["Content-Md5"], DeepEquals, []string{"nos/vZNvjGs17xIyjEFlwQ=="})
+	data, err := ioutil.ReadAll(req.Body)
+	req.Body.Close()
+	c.Assert(err, IsNil)
+	c.Assert(string(data), Equals, "<Delete><Quiet>false</Quiet><Object><Key>a</Key></Object><Object><Key>b</Key></Object></Delete>")
 }
 
 // Bucket List Objects docs: http://goo.gl/YjQTc
@@ -320,4 +408,28 @@ func (s *S) TestListWithDelimiter(c *C) {
 	c.Assert(data.IsTruncated, Equals, false)
 	c.Assert(len(data.Contents), Equals, 0)
 	c.Assert(data.CommonPrefixes, DeepEquals, []string{"photos/2006/feb/", "photos/2006/jan/"})
+}
+
+func (s *S) TestGetKey(c *C) {
+	testServer.Response(200, GetKeyHeaderDump, "")
+
+	b := s.s3.Bucket("bucket")
+	key, err := b.GetKey("name")
+
+	req := testServer.WaitRequest()
+	c.Assert(req.Method, Equals, "HEAD")
+	c.Assert(req.URL.Path, Equals, "/bucket/name")
+	c.Assert(req.Header["Date"], Not(Equals), "")
+
+	c.Assert(err, IsNil)
+	c.Assert(key.Key, Equals, "name")
+	c.Assert(key.LastModified, Equals, GetKeyHeaderDump["Last-Modified"])
+	c.Assert(key.Size, Equals, int64(434234))
+	c.Assert(key.ETag, Equals, GetKeyHeaderDump["ETag"])
+}
+
+func (s *S) TestUnescapedColon(c *C) {
+	b := s.s3.Bucket("bucket")
+	u := b.URL("foo:bar")
+	c.Assert(u, Equals, "http://localhost:4444/bucket/foo:bar")
 }

@@ -96,6 +96,97 @@ var RunInstancesExample = `
 </RunInstancesResponse>
 `
 
+// http://goo.gl/GRZgCD
+var RequestSpotInstancesExample = `
+<RequestSpotInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2014-02-01/">
+  <requestId>59dbff89-35bd-4eac-99ed-be587EXAMPLE</requestId>
+  <spotInstanceRequestSet>
+    <item>
+      <spotInstanceRequestId>sir-1a2b3c4d</spotInstanceRequestId>
+      <spotPrice>0.5</spotPrice>
+      <type>one-time</type>
+      <state>open</state>
+      <status>
+        <code>pending-evaluation</code>
+        <updateTime>2008-05-07T12:51:50.000Z</updateTime>
+        <message>Your Spot request has been submitted for review, and is pending evaluation.</message>
+      </status>
+      <availabilityZoneGroup>MyAzGroup</availabilityZoneGroup>
+      <launchSpecification>
+        <imageId>ami-1a2b3c4d</imageId>
+        <keyName>gsg-keypair</keyName>
+        <groupSet>
+          <item>
+            <groupId>sg-1a2b3c4d</groupId>
+            <groupName>websrv</groupName>
+          </item>
+        </groupSet>
+        <instanceType>m1.small</instanceType>
+        <blockDeviceMapping/>
+        <monitoring>
+          <enabled>false</enabled>
+        </monitoring>
+        <ebsOptimized>false</ebsOptimized>
+      </launchSpecification>
+      <createTime>YYYY-MM-DDTHH:MM:SS.000Z</createTime>
+      <productDescription>Linux/UNIX</productDescription>
+    </item>
+ </spotInstanceRequestSet>
+</RequestSpotInstancesResponse>
+`
+
+// http://goo.gl/KsKJJk
+var DescribeSpotRequestsExample = `
+<DescribeSpotInstanceRequestsResponse xmlns="http://ec2.amazonaws.com/doc/2014-02-01/">
+  <requestId>b1719f2a-5334-4479-b2f1-26926EXAMPLE</requestId>
+  <spotInstanceRequestSet>
+    <item>
+      <spotInstanceRequestId>sir-1a2b3c4d</spotInstanceRequestId>
+      <spotPrice>0.5</spotPrice>
+      <type>one-time</type>
+      <state>active</state>
+      <status>
+        <code>fulfilled</code>
+        <updateTime>2008-05-07T12:51:50.000Z</updateTime>
+        <message>Your Spot request is fulfilled.</message>
+      </status>
+      <launchSpecification>
+        <imageId>ami-1a2b3c4d</imageId>
+        <keyName>gsg-keypair</keyName>
+        <groupSet>
+          <item>
+            <groupId>sg-1a2b3c4d</groupId>
+            <groupName>websrv</groupName>
+          </item>
+        </groupSet>
+        <instanceType>m1.small</instanceType>
+        <monitoring>
+          <enabled>false</enabled>
+        </monitoring>
+        <ebsOptimized>false</ebsOptimized>
+      </launchSpecification>
+      <instanceId>i-1a2b3c4d</instanceId>
+      <createTime>YYYY-MM-DDTHH:MM:SS.000Z</createTime>
+      <productDescription>Linux/UNIX</productDescription>
+      <launchedAvailabilityZone>us-east-1a</launchedAvailabilityZone>
+    </item>
+  </spotInstanceRequestSet>
+</DescribeSpotInstanceRequestsResponse>
+`
+
+// http://goo.gl/DcfFgJ
+var CancelSpotRequestsExample = `
+<CancelSpotInstanceRequestsResponse xmlns="http://ec2.amazonaws.com/doc/2014-02-01/">
+  <requestId>59dbff89-35bd-4eac-99ed-be587EXAMPLE</requestId>
+  <spotInstanceRequestSet>
+    <item>
+      <spotInstanceRequestId>sir-1a2b3c4d</spotInstanceRequestId>
+      <state>cancelled</state>
+    </item>
+  </spotInstanceRequestSet>
+</CancelSpotInstanceRequestsResponse>
+`
+
 // http://goo.gl/3BKHj
 var TerminateInstancesExample = `
 <TerminateInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2011-12-15/">
@@ -514,6 +605,19 @@ var DescribeSecurityGroupsExample = `
            </ipRanges>
         </item>
       </ipPermissions>
+      <ipPermissionsEgress>
+        <item>
+          <ipProtocol>tcp</ipProtocol>
+          <fromPort>80</fromPort>
+          <toPort>80</toPort>
+          <groups/>
+          <ipRanges>
+            <item>
+              <cidrIp>0.0.0.0/0</cidrIp>
+            </item>
+          </ipRanges>
+        </item>
+      </ipPermissionsEgress>
     </item>
     <item>
       <ownerId>999988887777</ownerId>
@@ -593,6 +697,14 @@ var AuthorizeSecurityGroupIngressExample = `
 </AuthorizeSecurityGroupIngressResponse>
 `
 
+// http://goo.gl/u2sDJ
+var AuthorizeSecurityGroupEgressExample = `
+<AuthorizeSecurityGroupEgressResponse xmlns="http://ec2.amazonaws.com/doc/2014-06-15/">
+   <requestId>59dbff89-35bd-4eac-99ed-be587EXAMPLE</requestId>
+   <return>true</return>
+</AuthorizeSecurityGroupEgressResponse>
+`
+
 // http://goo.gl/Mz7xr
 var RevokeSecurityGroupIngressExample = `
 <RevokeSecurityGroupIngressResponse xmlns="http://ec2.amazonaws.com/doc/2011-12-15/">
@@ -667,6 +779,137 @@ var AllocateAddressExample = `
 </AllocateAddressResponse>
 `
 
+// http://goo.gl/DFySJY
+var DescribeInstanceStatusExample = `
+<DescribeInstanceStatusResponse xmlns="http://ec2.amazonaws.com/doc/2014-06-15/">
+    <requestId>3be1508e-c444-4fef-89cc-0b1223c4f02fEXAMPLE</requestId>
+    <instanceStatusSet>
+        <item>
+            <instanceId>i-1a2b3c4d</instanceId>
+            <availabilityZone>us-east-1d</availabilityZone>
+            <instanceState>
+                <code>16</code>
+                <name>running</name>
+            </instanceState>
+            <systemStatus>
+                <status>impaired</status>
+                <details>
+                    <item>
+                        <name>reachability</name>
+                        <status>failed</status>
+                        <impairedSince>YYYY-MM-DDTHH:MM:SS.000Z</impairedSince>
+                    </item>
+                </details>
+            </systemStatus>
+            <instanceStatus>
+                <status>impaired</status>
+                <details>
+                    <item>
+                        <name>reachability</name>
+                        <status>failed</status>
+                        <impairedSince>YYYY-MM-DDTHH:MM:SS.000Z</impairedSince>
+                    </item>
+                </details>
+            </instanceStatus>
+            <eventsSet>
+              <item>
+                <code>instance-retirement</code>
+                <description>The instance is running on degraded hardware</description>
+                <notBefore>YYYY-MM-DDTHH:MM:SS+0000</notBefore>
+                <notAfter>YYYY-MM-DDTHH:MM:SS+0000</notAfter>
+              </item>
+            </eventsSet>
+        </item>
+        <item>
+            <instanceId>i-2a2b3c4d</instanceId>
+            <availabilityZone>us-east-1d</availabilityZone>
+            <instanceState>
+                <code>16</code>
+                <name>running</name>
+            </instanceState>
+            <systemStatus>
+                <status>ok</status>
+                <details>
+                    <item>
+                        <name>reachability</name>
+                        <status>passed</status>
+                    </item>
+                </details>
+            </systemStatus>
+            <instanceStatus>
+                <status>ok</status>
+                <details>
+                    <item>
+                        <name>reachability</name>
+                        <status>passed</status>
+                    </item>
+                </details>
+            </instanceStatus>
+            <eventsSet>
+              <item>
+                <code>instance-reboot</code>
+                <description>The instance is scheduled for a reboot</description>
+                <notBefore>YYYY-MM-DDTHH:MM:SS+0000</notBefore>
+                <notAfter>YYYY-MM-DDTHH:MM:SS+0000</notAfter>
+              </item>
+            </eventsSet>
+        </item>
+        <item>
+            <instanceId>i-3a2b3c4d</instanceId>
+            <availabilityZone>us-east-1c</availabilityZone>
+            <instanceState>
+                <code>16</code>
+                <name>running</name>
+            </instanceState>
+            <systemStatus>
+                <status>ok</status>
+                <details>
+                    <item>
+                        <name>reachability</name>
+                        <status>passed</status>
+                    </item>
+                </details>
+            </systemStatus>
+            <instanceStatus>
+                <status>ok</status>
+                <details>
+                    <item>
+                        <name>reachability</name>
+                        <status>passed</status>
+                    </item>
+                </details>
+            </instanceStatus>
+        </item>
+        <item>
+            <instanceId>i-4a2b3c4d</instanceId>
+            <availabilityZone>us-east-1c</availabilityZone>
+            <instanceState>
+                <code>16</code>
+                <name>running</name>
+            </instanceState>
+            <systemStatus>
+                <status>ok</status>
+                <details>
+                    <item>
+                        <name>reachability</name>
+                        <status>passed</status>
+                    </item>
+                </details>
+            </systemStatus>
+            <instanceStatus>
+                <status>insufficient-data</status>
+                <details>
+                    <item>
+                        <name>reachability</name>
+                        <status>insufficient-data</status>
+                    </item>
+                </details>
+            </instanceStatus>
+         </item>
+    </instanceStatusSet>
+</DescribeInstanceStatusResponse>
+`
+
 // http://goo.gl/3Q0oCc
 var ReleaseAddressExample = `
 <ReleaseAddressResponse xmlns="http://ec2.amazonaws.com/doc/2013-10-15/">
@@ -699,3 +942,322 @@ var ModifyInstanceExample = `
   <return>true</return>
 </ModifyImageAttributeResponse>
 `
+
+var CreateVpcExample = `
+<CreateVpcResponse xmlns="http://ec2.amazonaws.com/doc/2014-06-15/">
+   <requestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</requestId>
+   <vpc>
+      <vpcId>vpc-1a2b3c4d</vpcId>
+      <state>pending</state>
+      <cidrBlock>10.0.0.0/16</cidrBlock>
+      <dhcpOptionsId>dopt-1a2b3c4d2</dhcpOptionsId>
+      <instanceTenancy>default</instanceTenancy>
+      <tagSet/>
+   </vpc>
+</CreateVpcResponse>
+`
+
+var DescribeVpcsExample = `
+<DescribeVpcsResponse xmlns="http://ec2.amazonaws.com/doc/2014-06-15/">
+  <requestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</requestId>
+  <vpcSet>
+    <item>
+      <vpcId>vpc-1a2b3c4d</vpcId>
+      <state>available</state>
+      <cidrBlock>10.0.0.0/23</cidrBlock>
+      <dhcpOptionsId>dopt-7a8b9c2d</dhcpOptionsId>
+      <instanceTenancy>default</instanceTenancy>
+      <isDefault>false</isDefault>
+      <tagSet/>
+    </item>
+  </vpcSet>
+</DescribeVpcsResponse>
+`
+
+var CreateSubnetExample = `
+<CreateSubnetResponse xmlns="http://ec2.amazonaws.com/doc/2014-06-15/">
+  <requestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</requestId>
+  <subnet>
+    <subnetId>subnet-9d4a7b6c</subnetId>
+    <state>pending</state>
+    <vpcId>vpc-1a2b3c4d</vpcId>
+    <cidrBlock>10.0.1.0/24</cidrBlock>
+    <availableIpAddressCount>251</availableIpAddressCount>
+    <availabilityZone>us-east-1a</availabilityZone>
+    <tagSet/>
+  </subnet>
+</CreateSubnetResponse>
+`
+
+// http://goo.gl/tu2Kxm
+var ModifySubnetAttributeExample = `
+<ModifySubnetAttributeResponse xmlns="http://ec2.amazonaws.com/doc/2014-06-15/">
+   <requestId>59dbff89-35bd-4eac-99ed-be587EXAMPLE</requestId>
+   <return>true</return>
+</ModifySubnetAttributeResponse>
+`
+
+// http://goo.gl/r6ZCPm
+var ResetImageAttributeExample = `
+<ResetImageAttributeResponse xmlns="http://ec2.amazonaws.com/doc/2014-06-15/">
+  <requestId>59dbff89-35bd-4eac-99ed-be587EXAMPLE</requestId>
+  <return>true</return>
+</ResetImageAttributeResponse>
+`
+
+// http://goo.gl/ylxT4R
+var DescribeAvailabilityZonesExample1 = `
+<DescribeAvailabilityZonesResponse xmlns="http://ec2.amazonaws.com/doc/2014-05-01/">
+   <requestId>59dbff89-35bd-4eac-99ed-be587EXAMPLE</requestId>
+   <availabilityZoneInfo>
+   <item>
+      <zoneName>us-east-1a</zoneName>
+      <zoneState>available</zoneState>
+      <regionName>us-east-1</regionName>
+      <messageSet/>
+   </item>
+   <item>
+      <zoneName>us-east-1b</zoneName>
+      <zoneState>available</zoneState>
+      <regionName>us-east-1</regionName>
+      <messageSet/>
+   </item>
+   <item>
+      <zoneName>us-east-1c</zoneName>
+      <zoneState>available</zoneState>
+      <regionName>us-east-1</regionName>
+      <messageSet/>
+   </item>
+   <item>
+      <zoneName>us-east-1d</zoneName>
+      <zoneState>available</zoneState>
+      <regionName>us-east-1</regionName>
+      <messageSet/>
+   </item>
+   </availabilityZoneInfo>
+</DescribeAvailabilityZonesResponse>
+`
+
+// http://goo.gl/ylxT4R
+var DescribeAvailabilityZonesExample2 = `
+<DescribeAvailabilityZonesResponse xmlns="http://ec2.amazonaws.com/doc/2014-05-01/">
+   <requestId>59dbff89-35bd-4eac-99ed-be587EXAMPLE</requestId>
+   <availabilityZoneInfo>
+   <item>
+      <zoneName>us-east-1a</zoneName>
+      <zoneState>impaired</zoneState>
+      <regionName>us-east-1</regionName>
+      <messageSet/>
+   </item>
+   <item>
+      <zoneName>us-east-1b</zoneName>
+      <zoneState>unavailable</zoneState>
+      <regionName>us-east-1</regionName>
+      <messageSet>
+         <item>us-east-1b is currently down for maintenance.</item>
+      </messageSet>
+   </item>
+   </availabilityZoneInfo>
+</DescribeAvailabilityZonesResponse>
+`
+
+// http://goo.gl/sdomyE
+var CreateNetworkAclExample = `
+<CreateNetworkAclResponse xmlns="http://ec2.amazonaws.com/doc/2014-10-01/">
+   <requestId>59dbff89-35bd-4eac-99ed-be587EXAMPLE</requestId>
+   <networkAcl>
+      <networkAclId>acl-5fb85d36</networkAclId>
+      <vpcId>vpc-11ad4878</vpcId>
+      <default>false</default>
+      <entrySet>
+         <item>
+            <ruleNumber>32767</ruleNumber>
+            <protocol>-1</protocol>
+            <ruleAction>deny</ruleAction>
+            <egress>true</egress>
+            <cidrBlock>0.0.0.0/0</cidrBlock>
+         </item>
+         <item>
+            <ruleNumber>32767</ruleNumber>
+            <protocol>-1</protocol>
+            <ruleAction>deny</ruleAction>
+            <egress>false</egress>
+            <cidrBlock>0.0.0.0/0</cidrBlock>
+         </item>
+      </entrySet>
+      <associationSet/>
+      <tagSet/>
+   </networkAcl>
+</CreateNetworkAclResponse>
+`
+
+// http://goo.gl/6sYloC
+var CreateNetworkAclEntryRespExample = `
+<CreateNetworkAclEntryResponse xmlns="http://ec2.amazonaws.com/doc/2014-10-01/">
+   <requestId>59dbff89-35bd-4eac-99ed-be587EXAMPLE</requestId>
+   <return>true</return>
+</CreateNetworkAclEntryResponse>
+`
+
+// http://goo.gl/5tqceF
+var DescribeNetworkAclsExample = `
+<DescribeNetworkAclsResponse xmlns="http://ec2.amazonaws.com/doc/2014-10-01/">
+   <requestId>59dbff89-35bd-4eac-99ed-be587EXAMPLE</requestId>
+   <networkAclSet>
+   <item>
+     <networkAclId>acl-5566953c</networkAclId>
+     <vpcId>vpc-5266953b</vpcId>
+     <default>true</default>
+     <entrySet>
+       <item>
+         <ruleNumber>100</ruleNumber>
+         <protocol>-1</protocol>
+         <ruleAction>allow</ruleAction>
+         <egress>true</egress>
+         <cidrBlock>0.0.0.0/0</cidrBlock>
+       </item>
+       <item>
+         <ruleNumber>32767</ruleNumber>
+         <protocol>-1</protocol>
+         <ruleAction>deny</ruleAction>
+         <egress>true</egress>
+         <cidrBlock>0.0.0.0/0</cidrBlock>
+       </item>
+       <item>
+         <ruleNumber>100</ruleNumber>
+         <protocol>-1</protocol>
+         <ruleAction>allow</ruleAction>
+         <egress>false</egress>
+         <cidrBlock>0.0.0.0/0</cidrBlock>
+       </item>
+       <item>
+         <ruleNumber>32767</ruleNumber>
+         <protocol>-1</protocol>
+         <ruleAction>deny</ruleAction>
+         <egress>false</egress>
+         <cidrBlock>0.0.0.0/0</cidrBlock>
+       </item>
+     </entrySet>
+     <associationSet/>
+     <tagSet/>
+   </item>
+   <item>
+     <networkAclId>acl-5d659634</networkAclId>
+     <vpcId>vpc-5266953b</vpcId>
+     <default>false</default>
+     <entrySet>
+       <item>
+         <ruleNumber>110</ruleNumber>
+         <protocol>6</protocol>
+         <ruleAction>allow</ruleAction>
+         <egress>true</egress>
+         <cidrBlock>0.0.0.0/0</cidrBlock>
+         <portRange>
+           <from>49152</from>
+           <to>65535</to>
+         </portRange>
+       </item>
+       <item>
+         <ruleNumber>32767</ruleNumber>
+         <protocol>-1</protocol>
+         <ruleAction>deny</ruleAction>
+         <egress>true</egress>
+         <cidrBlock>0.0.0.0/0</cidrBlock>
+       </item>
+       <item>
+         <ruleNumber>110</ruleNumber>
+         <protocol>6</protocol>
+         <ruleAction>allow</ruleAction>
+         <egress>false</egress>
+         <cidrBlock>0.0.0.0/0</cidrBlock>
+         <portRange>
+           <from>80</from>
+           <to>80</to>
+         </portRange>
+       </item>
+       <item>
+         <ruleNumber>120</ruleNumber>
+         <protocol>6</protocol>
+         <ruleAction>allow</ruleAction>
+         <egress>false</egress>
+         <cidrBlock>0.0.0.0/0</cidrBlock>
+         <portRange>
+           <from>443</from>
+           <to>443</to>
+         </portRange>
+       </item>
+       <item>
+         <ruleNumber>32767</ruleNumber>
+         <protocol>-1</protocol>
+         <ruleAction>deny</ruleAction>
+         <egress>false</egress>
+         <cidrBlock>0.0.0.0/0</cidrBlock>
+       </item>
+     </entrySet>
+     <associationSet>
+       <item>
+         <networkAclAssociationId>aclassoc-5c659635</networkAclAssociationId>
+         <networkAclId>acl-5d659634</networkAclId>
+         <subnetId>subnet-ff669596</subnetId>
+       </item>
+       <item>
+         <networkAclAssociationId>aclassoc-c26596ab</networkAclAssociationId>
+         <networkAclId>acl-5d659634</networkAclId>
+         <subnetId>subnet-f0669599</subnetId>
+       </item>
+     </associationSet>
+     <tagSet/>
+   </item>
+ </networkAclSet>
+</DescribeNetworkAclsResponse>
+`
+
+var ReplaceNetworkAclAssociationResponseExample = `
+<ReplaceNetworkAclAssociationResponse xmlns="http://ec2.amazonaws.com/doc/2014-10-01/">
+   <requestId>59dbff89-35bd-4eac-99ed-be587EXAMPLE</requestId>
+   <newAssociationId>aclassoc-17b85d7e</newAssociationId>
+</ReplaceNetworkAclAssociationResponse>
+`
+
+var CreateCustomerGatewayResponseExample = `
+<CreateCustomerGatewayResponse xmlns="http://ec2.amazonaws.com/doc/2014-06-15/">
+   <requestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</requestId>
+   <customerGateway>
+      <customerGatewayId>cgw-b4dc3961</customerGatewayId>
+      <state>pending</state>
+      <type>ipsec.1</type>
+      <ipAddress>10.0.0.20</ipAddress>
+      <bgpAsn>65534</bgpAsn>
+      <tagSet/>
+   </customerGateway>
+</CreateCustomerGatewayResponse>
+`
+
+var DescribeCustomerGatewaysResponseExample = `
+<DescribeCustomerGatewaysResponse xmlns="http://ec2.amazonaws.com/doc/2014-06-15/">
+  <requestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</requestId>
+  <customerGatewaySet>
+    <item>
+      <customerGatewayId>cgw-b4dc3961</customerGatewayId>
+      <state>available</state>
+      <type>ipsec.1</type>
+      <ipAddress>12.1.2.3</ipAddress>
+      <bgpAsn>65534</bgpAsn>
+      <tagSet/>
+    </item>
+    <item>
+      <customerGatewayId>cgw-b4dc3962</customerGatewayId>
+      <state>pending</state>
+      <type>ipsec.1</type>
+      <ipAddress>12.1.2.4</ipAddress>
+      <bgpAsn>65500</bgpAsn>
+      <tagSet/>
+    </item>
+  </customerGatewaySet>
+</DescribeCustomerGatewaysResponse>
+`
+var DeleteCustomerGatewayResponseExample = `
+<DeleteCustomerGatewayResponse xmlns="http://ec2.amazonaws.com/doc/2014-06-15/">
+   <requestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</requestId>
+   <return>true</return>
+</DeleteCustomerGatewayResponse>`
