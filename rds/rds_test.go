@@ -1,11 +1,12 @@
 package rds_test
 
 import (
-	"github.com/mitchellh/goamz/aws"
-	"github.com/mitchellh/goamz/rds"
-	"github.com/mitchellh/goamz/testutil"
-	. "github.com/motain/gocheck"
 	"testing"
+
+	. "github.com/motain/gocheck"
+	"github.com/stvp/goamz/aws"
+	"github.com/stvp/goamz/rds"
+	"github.com/stvp/goamz/testutil"
 )
 
 func Test(t *testing.T) {

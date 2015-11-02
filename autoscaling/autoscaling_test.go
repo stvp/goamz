@@ -3,10 +3,10 @@ package autoscaling_test
 import (
 	"testing"
 
-	"github.com/mitchellh/goamz/autoscaling"
-	"github.com/mitchellh/goamz/aws"
-	"github.com/mitchellh/goamz/testutil"
 	. "github.com/motain/gocheck"
+	"github.com/stvp/goamz/autoscaling"
+	"github.com/stvp/goamz/aws"
+	"github.com/stvp/goamz/testutil"
 )
 
 func Test(t *testing.T) {
