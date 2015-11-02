@@ -209,26 +209,26 @@ func addBlockDeviceParams(prename string, params map[string]string, blockdevices
 		} else if k.NoDevice {
 			params[prefix+"NoDevice"] = ""
 		} else {
-		if k.SnapshotId != "" {
-			params[prefix+"Ebs.SnapshotId"] = k.SnapshotId
-		}
-		if k.VolumeType != "" {
-			params[prefix+"Ebs.VolumeType"] = k.VolumeType
-		}
-		if k.IOPS != 0 {
-			params[prefix+"Ebs.Iops"] = strconv.FormatInt(k.IOPS, 10)
-		}
-		if k.VolumeSize != 0 {
-			params[prefix+"Ebs.VolumeSize"] = strconv.FormatInt(k.VolumeSize, 10)
-		}
-		if k.DeleteOnTermination {
-			params[prefix+"Ebs.DeleteOnTermination"] = "true"
+			if k.SnapshotId != "" {
+				params[prefix+"Ebs.SnapshotId"] = k.SnapshotId
+			}
+			if k.VolumeType != "" {
+				params[prefix+"Ebs.VolumeType"] = k.VolumeType
+			}
+			if k.IOPS != 0 {
+				params[prefix+"Ebs.Iops"] = strconv.FormatInt(k.IOPS, 10)
+			}
+			if k.VolumeSize != 0 {
+				params[prefix+"Ebs.VolumeSize"] = strconv.FormatInt(k.VolumeSize, 10)
+			}
+			if k.DeleteOnTermination {
+				params[prefix+"Ebs.DeleteOnTermination"] = "true"
 			} else {
 				params[prefix+"Ebs.DeleteOnTermination"] = "false"
 			}
 			if k.Encrypted {
 				params[prefix+"Ebs.Encrypted"] = "true"
-		}
+			}
 		}
 	}
 }
@@ -1173,7 +1173,6 @@ func (ec2 *EC2) ReleaseAddress(id string) (resp *SimpleResp, err error) {
 	params := makeParams("ReleaseAddress")
 	params["AllocationId"] = id
 
-
 	resp = &SimpleResp{}
 	err = ec2.query(params, resp)
 	if err != nil {
@@ -1182,6 +1181,7 @@ func (ec2 *EC2) ReleaseAddress(id string) (resp *SimpleResp, err error) {
 
 	return
 }
+
 // Release an Elastic IP (Public)
 func (ec2 *EC2) ReleasePublicAddress(publicIp string) (resp *SimpleResp, err error) {
 	params := makeParams("ReleaseAddress")
@@ -1204,7 +1204,7 @@ func (ec2 *EC2) AssociateAddress(options *AssociateAddress) (resp *AssociateAddr
 		params["PublicIp"] = options.PublicIp
 	}
 	if options.AllocationId != "" {
-	params["AllocationId"] = options.AllocationId
+		params["AllocationId"] = options.AllocationId
 	}
 	if options.AllowReassociation {
 		params["AllowReassociation"] = "true"
@@ -2103,7 +2103,7 @@ func (ec2 *EC2) DeleteTags(resourceIds []string, tags []Tag) (resp *SimpleResp, 
 		params["Tag."+strconv.Itoa(j+1)+".Key"] = tag.Key
 
 		if tag.Value != "" {
-		params["Tag."+strconv.Itoa(j+1)+".Value"] = tag.Value
+			params["Tag."+strconv.Itoa(j+1)+".Value"] = tag.Value
 		}
 	}
 
@@ -2114,7 +2114,7 @@ func (ec2 *EC2) DeleteTags(resourceIds []string, tags []Tag) (resp *SimpleResp, 
 	}
 
 	return resp, nil
-	}
+}
 
 type TagsResp struct {
 	RequestId string        `xml:"requestId"`
@@ -2261,11 +2261,11 @@ func (ec2 *EC2) ModifyInstance(instId string, options *ModifyInstance) (resp *Mo
 	}
 
 	if options.SourceDestCheck || options.SetSourceDestCheck {
-	if options.SourceDestCheck {
-		params["SourceDestCheck.Value"] = "true"
+		if options.SourceDestCheck {
+			params["SourceDestCheck.Value"] = "true"
 		} else {
 			params["SourceDestCheck.Value"] = "false"
-	}
+		}
 	}
 
 	if options.SriovNetSupport {
@@ -2473,7 +2473,7 @@ type CreateSubnet struct {
 type CreateSubnetResp struct {
 	RequestId string `xml:"requestId"`
 	Subnet    Subnet `xml:"subnet"`
-	}
+}
 
 // The ModifySubnetAttribute request parameters
 //
